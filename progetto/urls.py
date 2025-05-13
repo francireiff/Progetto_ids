@@ -1,3 +1,4 @@
+
 """
 URL configuration for progetto project.
 
@@ -16,9 +17,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth import views as auth_views
+from interfaccia.views import RegistrazionePazienteView
 from interfaccia import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'), 
+    path('', views.home, name='home'),
+    path('registrazione/paziente/', RegistrazionePazienteView.as_view(), name='registrazione_paziente'),
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
 ]
