@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Errore{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+  <h2>Si è verificato un errore</h2>
+  <p>{{ error }}</p>
+  <p>Se il problema persiste, contattare l'amministratore del sistema.</p>
+  <p><a href="{% url 'home' %}" class="button">Torna alla Home</a></p>
+</div>
+{% endblock %}

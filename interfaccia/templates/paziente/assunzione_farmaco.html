@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Segnala Sintomo{% endblock %}
+{% block title %}Assunzione Farmaco{% endblock %}
 
 {% block content %}
-<h2>Segnala un Nuovo Sintomo</h2>
+<h2>Registra Assunzione Farmaco</h2>
 
 <form method="post">
   {% csrf_token %}
@@ -25,17 +25,16 @@
   </div>
   {% endfor %}
 
-  <button type="submit" class="button">Salva Sintomo</button>
+  <button type="submit" class="button">Salva Assunzione</button>
   <a href="{% url 'dashboard_paziente' %}" class="button" style="background-color: #ccc;">Annulla</a>
 </form>
 
 <div style="margin-top: 20px;">
-  <h3>Sintomi comuni del diabete</h3>
+  <h3>Promemoria</h3>
   <ul>
-    <li><strong>Ipoglicemia</strong>: sudorazione, tremore, fame, confusione, capogiri</li>
-    <li><strong>Iperglicemia</strong>: sete intensa, minzione frequente, stanchezza, visione offuscata</li>
-    <li><strong>Altri</strong>: formicolio agli arti, guarigione lenta delle ferite, infezioni frequenti</li>
+    <li>Assicurati di assumere i farmaci secondo le indicazioni del medico</li>
+    <li>Se hai dimenticato un'assunzione, consulta il medico prima di assumere dosi aggiuntive</li>
+    <li>Segnala eventuali effetti collaterali al tuo medico</li>
   </ul>
-  <p><strong>Nota:</strong> In caso di sintomi gravi, contatta immediatamente il tuo medico o recati al pronto soccorso.</p>
 </div>
 {% endblock %}

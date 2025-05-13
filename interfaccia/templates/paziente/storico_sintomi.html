@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Storico Sintomi{% endblock %}
+
+{% block content %}
+<h2>Storico Sintomi</h2>
+
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'segnala_sintomo' %}" class="button">Segnala Nuovo Sintomo</a>
+</div>
+
+{% if sintomi %}
+<table>
+    <tr>
+        <th>Data Inizio</th>
+        <th>Data Fine</th>
+        <th>Tipo</th>
+        <th>Intensità</th>
+        <th>Descrizione</th>
+        <th>Stato</th>
+    </tr>
+    {% for sintomo in sintomi %}
+    <tr>
+        <td>{{ sintomo.data_inizio }}</td>
+        <td>{{ sintomo.data_fine|default:"In corso" }}</td>
+        <td>{{ sintomo.get_tipo_display }}</td>
+        <td>{{ sintomo.get_intensita_display }}</td>
+        <td>{{ sintomo.descrizione }}</td>
+        <td>
+            {% if sintomo.data_fine %}
+            <span style="color: green;">Risolto</span>
+            {% else %}
+            <span style="color: orange;">Attivo</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if page_obj.has_other_pages %}
+<div style="margin-top: 20px; text-align: center;">
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Prima</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Precedente</a>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+        <span style="font-weight: bold; padding: 0 10px;">{{ i }}</span>
+        {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+        <a href="?page={{ i }}">{{ i }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Successiva</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Ultima &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% else %}
+<p>Nessun sintomo registrato.</p>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <h3>Importanza del monitoraggio dei sintomi</h3>
+    <p>Tenere traccia dei tuoi sintomi aiuta il medico a:
+    <ul>
+        <li>Valutare l'efficacia della terapia</li>
+        <li>Individuare schemi o trigger che causano variazioni glicemiche</li>
+        <li>Adattare il piano di trattamento in base alle tue necessità</li>
+    </ul>
+    </p>
+</div>
+{% endblock %}

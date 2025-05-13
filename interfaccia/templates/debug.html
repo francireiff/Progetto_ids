@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Debug View{% endblock %}
+
+{% block content %}
+<h2>Informazioni di Debug</h2>
+
+<div class="alert alert-info">
+  <h3>Informazioni utente</h3>
+  <ul>
+    <li><strong>Username:</strong> {{ username }}</li>
+    <li><strong>User ID:</strong> {{ user_id }}</li>
+    <li><strong>Tipo utente:</strong> {{ tipo_utente }}</li>
+    <li><strong>Autenticato:</strong> {{ is_authenticated }}</li>
+  </ul>
+
+  {% if tipo_utente == 'paziente' %}
+  <h3>Informazioni paziente</h3>
+  {% if paziente_exists %}
+  <ul>
+    <li><strong>ID Paziente:</strong> {{ paziente_id }}</li>
+    <li><strong>Medico di riferimento:</strong> {{ medico_riferimento }}</li>
+  </ul>
+  {% else %}
+  <p class="alert alert-danger">
+    <strong>Errore nel recuperare il profilo paziente:</strong> {{ paziente_error }}
+  </p>
+  {% endif %}
+  {% endif %}
+</div>
+
+<div class="alert alert-warning">
+  <h3>URL disponibili</h3>
+  <ul>
+    {% for url in available_urls %}
+    <li>{{ url }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div>
+  <h3>Azioni</h3>
+  <a href="{% url 'home' %}" class="button">Home</a>
+  <a href="{% url 'dashboard' %}" class="button">Dashboard</a>
+  <a href="{% url 'logout' %}" class="button">Logout</a>
+</div>
+{% endblock %}
