@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Storico Assunzioni{% endblock %}
+
+{% block content %}
+<h2>Storico Assunzioni Farmaci</h2>
+
+<div style="margin-bottom: 20px;">
+  <a href="{% url 'assunzione_farmaco' %}" class="button">Nuova Assunzione</a>
+</div>
+
+{% if assunzioni %}
+<table>
+  <tr>
+    <th>Data/Ora</th>
+    <th>Farmaco</th>
+    <th>Dosaggio</th>
+    <th>Terapia</th>
+    <th>Note</th>
+  </tr>
+  {% for ass in assunzioni %}
+  <tr>
+    <td>{{ ass.data_ora }}</td>
+    <td>{{ ass.farmaco.nome }}</td>
+    <td>{{ ass.dosaggio }}</td>
+    <td>{{ ass.terapia.descrizione|default:"-" }}</td>
+    <td>{{ ass.note|default:"-" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% if page_obj.has_other_pages %}
+<div style="margin-top: 20px; text-align: center;">
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">&laquo; Prima</a>
+    <a href="?page={{ page_obj.previous_page_number }}">Precedente</a>
+    {% endif %}
+
+    {% for i in page_obj.paginator.page_range %}
+    {% if page_obj.number == i %}
+    <span style="font-weight: bold; padding: 0 10px;">{{ i }}</span>
+    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+    <a href="?page={{ i }}">{{ i }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Successiva</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">Ultima &raquo;</a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% else %}
+<p>Nessuna assunzione di farmaci registrata.</p>
+{% endif %}
+
+<div style="margin-top: 20px;">
+  <h3>Informazioni</h3>
+  <ul>
+    <li>Ricorda di registrare sempre l'assunzione dei farmaci per mantenere uno storico accurato</li>
+    <li>L'aderenza alla terapia è fondamentale per il controllo del diabete</li>
+  </ul>
+</div>
+{% endblock %}

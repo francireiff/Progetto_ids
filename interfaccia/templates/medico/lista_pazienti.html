@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Lista Pazienti{% endblock %}
+
+{% block content %}
+<h2>Elenco Pazienti</h2>
+
+{% if pazienti %}
+<div style="margin-bottom: 20px;">
+  <input type="text" id="cercaPaziente" onkeyup="cercaPazienti()" placeholder="Cerca paziente..." style="padding: 10px; width: 300px;">
+</div>
+
+<table id="tabellaPazienti">
+  <tr>
+    <th>Nome</th>
+    <th>Età</th>
+    <th>Tipo Diabete</th>
+    <th>Email</th>
+    <th>Telefono</th>
+    <th>Alert Attivi</th>
+    <th>Azioni</th>
+  </tr>
+  {% for paziente in pazienti %}
+  <tr>
+    <td>{{ paziente.utente.get_full_name }}</td>
+    <td>{{ paziente.eta }}</td>
+    <td>{{ paziente.get_tipo_diabete_display }}</td>
+    <td>{{ paziente.utente.email }}</td>
+    <td>{{ paziente.telefono }}</td>
+    <td>{{ paziente.alert_set.filter.risolto=False|count }}</td>
+    <td>
+      <a href="{% url 'dettaglio_paziente' pk=paziente.id %}" class="button">Visualizza</a>
+      <a href="{% url 'aggiorna_paziente' pk=paziente.id %}" class="button">Modifica</a>
+      <a href="{% url 'prescrivi_terapia' paziente_id=paziente.id %}" class="button">Prescrivi Terapia</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Nessun paziente assegnato.</p>
+{% endif %}
+
+{% block extra_js %}
+<script>
+  function cercaPazienti() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("cercaPaziente");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("tabellaPazienti");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 1; i < tr.length; i++) { // Inizia da 1 per saltare l'intestazione
+      td = tr[i].getElementsByTagName("td")[0]; // Colonna nome
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Prescrivi Terapia{% endblock %}
+
+{% block content %}
+<h2>Prescrivi Terapia</h2>
+<h3>Paziente: {{ paziente.utente.get_full_name }}</h3>
+
+<div class="alert alert-info" style="margin-bottom: 20px;">
+  <p>Stai prescrivendo una nuova terapia per il paziente. I campi contrassegnati con * sono obbligatori.</p>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div style="margin-bottom: 20px;">
+    <h4>Informazioni Terapia</h4>
+    <table style="width: 100%;">
+      <tr>
+        <td style="width: 30%; padding: 10px;"><label for="{{ form.farmaco.id_for_label }}">Farmaco*:</label></td>
+        <td style="width: 70%; padding: 10px;">
+          {{ form.farmaco }}
+          {% if form.farmaco.errors %}
+          <div style="color: red;">{{ form.farmaco.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.dosaggio.id_for_label }}">Dosaggio*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.dosaggio }}
+          {% if form.dosaggio.errors %}
+          <div style="color: red;">{{ form.dosaggio.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.frequenza.id_for_label }}">Frequenza*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.frequenza }}
+          {% if form.frequenza.errors %}
+          <div style="color: red;">{{ form.frequenza.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.data_inizio.id_for_label }}">Data Inizio*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.data_inizio }}
+          {% if form.data_inizio.errors %}
+          <div style="color: red;">{{ form.data_inizio.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.data_fine.id_for_label }}">Data Fine*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.data_fine }}
+          {% if form.data_fine.errors %}
+          <div style="color: red;">{{ form.data_fine.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.attiva.id_for_label }}">Terapia Attiva:</label></td>
+        <td style="padding: 10px;">
+          {{ form.attiva }}
+          {% if form.attiva.errors %}
+          <div style="color: red;">{{ form.attiva.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <h4>Note e Istruzioni</h4>
+    <div style="padding: 10px;">
+      {{ form.note }}
+      {% if form.note.errors %}
+      <div style="color: red;">{{ form.note.errors }}</div>
+      {% endif %}
+      <p style="font-size: 0.9em; margin-top: 5px;">Inserisci eventuali note o istruzioni specifiche per il paziente riguardo questa terapia.</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+    <a href="{% url 'dettaglio_paziente' pk=paziente.id %}" class="button" style="background-color: #f44336;">Annulla</a>
+    <button type="submit" class="button">Prescrivi Terapia</button>
+  </div>
+</form>
+
+<div style="margin-top: 40px;">
+  <h3>Terapie Attive del Paziente</h3>
+  {% if paziente.terapia_set.filter.attiva=True %}
+  <table>
+    <tr>
+      <th>Farmaco</th>
+      <th>Dosaggio</th>
+      <th>Frequenza</th>
+      <th>Data Inizio</th>
+      <th>Data Fine</th>
+      <th>Note</th>
+    </tr>
+    {% for terapia in paziente.terapia_set.filter.attiva=True %}
+    <tr>
+      <td>{{ terapia.farmaco }}</td>
+      <td>{{ terapia.dosaggio }}</td>
+      <td>{{ terapia.frequenza }}</td>
+      <td>{{ terapia.data_inizio }}</td>
+      <td>{{ terapia.data_fine }}</td>
+      <td>{{ terapia.note|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Il paziente non ha terapie attive al momento.</p>
+  {% endif %}
+</div>
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Imposta data di inizio predefinita se non specificata
+      const dataInizioField = document.getElementById('{{ form.data_inizio.id_for_label }}');
+      if (!dataInizioField.value) {
+          const oggi = new Date();
+          const annoCorrente = oggi.getFullYear();
+          const meseCorrente = String(oggi.getMonth() + 1).padStart(2, '0');
+          const giornoCorrente = String(oggi.getDate()).padStart(2, '0');
+          dataInizioField.value = `${annoCorrente}-${meseCorrente}-${giornoCorrente}`;
+      }
+
+      // Validazione: assicura che la data di fine sia successiva alla data di inizio
+      const dataFineField = document.getElementById('{{ form.data_fine.id_for_label }}');
+      const formElement = document.querySelector('form');
+
+      formElement.addEventListener('submit', function(event) {
+          const dataInizio = new Date(dataInizioField.value);
+          const dataFine = new Date(dataFineField.value);
+
+          if (dataFine < dataInizio) {
+              event.preventDefault();
+              alert('La data di fine deve essere successiva alla data di inizio!');
+          }
+      });
+  });
+</script>
+{% endblock %}
+{% endblock %}

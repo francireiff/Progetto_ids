@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Storico Glicemia{% endblock %}
+
+{% block content %}
+<h2>Storico Rilevazioni Glicemiche</h2>
+
+<div style="margin-bottom: 20px;">
+  <a href="{% url 'rileva_glicemia' %}" class="button">Nuova Rilevazione</a>
+  <a href="{% url 'grafico_glicemia' %}" class="button">Visualizza Grafici</a>
+</div>
+
+{% if rilevazioni %}
+<table>
+  <tr>
+    <th>Data/Ora</th>
+    <th>Valore (mg/dL)</th>
+    <th>Momento</th>
+    <th>Pasto</th>
+    <th>Note</th>
+  </tr>
+  {% for rilev in rilevazioni %}
+  <tr>
+    <td>{{ rilev.data_ora }}</td>
+    <td>
+      {% if rilev.valore < 70 %}
+      <span style="color: red;">{{ rilev.valore }}</span>
+      {% elif rilev.valore > 180 %}
+      <span style="color: red;">{{ rilev.valore }}</span>
+      {% else %}
+      <span style="color: green;">{{ rilev.valore }}</span>
+      {% endif %}
+    </td>
+    <td>{{ rilev.get_momento_display }}</td>
+    <td>{{ rilev.get_pasto_display }}</td>
+    <td>{{ rilev.note }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% if page_obj.has_other_pages %}
+<div style="margin-top: 20px; text-align: center;">
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">&laquo; Prima</a>
+    <a href="?page={{ page_obj.previous_page_number }}">Precedente</a>
+    {% endif %}
+
+    {% for i in page_obj.paginator.page_range %}
+    {% if page_obj.number == i %}
+    <span style="font-weight: bold; padding: 0 10px;">{{ i }}</span>
+    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+    <a href="?page={{ i }}">{{ i }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Successiva</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">Ultima &raquo;</a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% else %}
+<p>Nessuna rilevazione glicemica registrata.</p>
+{% endif %}
+
+<div style="margin-top: 20px;">
+  <h3>Valori di riferimento</h3>
+  <ul>
+    <li><strong>Ipoglicemia:</strong> &lt; 70 mg/dL</li>
+    <li><strong>Normale a digiuno:</strong> 70-100 mg/dL</li>
+    <li><strong>Normale dopo pasto:</strong> &lt; 180 mg/dL</li>
+    <li><strong>Iperglicemia:</strong> &gt; 180 mg/dL</li>
+  </ul>
+</div>
+{% endblock %}

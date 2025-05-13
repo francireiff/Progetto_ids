@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Medico{% endblock %}
+
+{% block content %}
+<h2>Dashboard Medico</h2>
+<h3>Benvenuto, Dr. {{ medico.utente.get_full_name }}</h3>
+
+<div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+    <div style="width: 48%;">
+        <div class="alert alert-info">
+            <p><strong>Numero di pazienti:</strong> {{ pazienti.count }}</p>
+            <p><strong>Messaggi non letti:</strong> {{ messaggi_non_letti }}</p>
+            <p><strong>Alert non risolti:</strong> {{ alert_non_risolti.count }}</p>
+        </div>
+    </div>
+    <div style="width: 48%;">
+        <div class="alert alert-warning">
+            <h4>Azioni rapide</h4>
+            <p><a href="{% url 'lista_pazienti' %}" class="button">Gestisci Pazienti</a></p>
+            <p><a href="{% url 'lista_alert' %}" class="button">Gestisci Alert</a></p>
+            <p><a href="{% url 'lista_email_medico' %}" class="button">Messaggi</a></p>
+        </div>
+    </div>
+</div>
+
+<div style="margin-bottom: 30px;">
+    <h3>Pazienti con Alert Critici (ultima settimana)</h3>
+    {% if pazienti_critici %}
+    <table>
+        <tr>
+            <th>Paziente</th>
+            <th>Numero Alert</th>
+            <th>Azioni</th>
+        </tr>
+        {% for item in pazienti_critici %}
+        <tr>
+            <td>{{ item.paziente.utente.get_full_name }}</td>
+            <td>{{ item.alert_count }}</td>
+            <td><a href="{% url 'dettaglio_paziente' pk=item.paziente.id %}" class="button">Visualizza</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Nessun paziente con alert critici nell'ultima settimana.</p>
+    {% endif %}
+</div>
+
+<div style="margin-bottom: 30px;">
+    <h3>Alert Non Risolti</h3>
+    {% if alert_non_risolti %}
+    <table>
+        <tr>
+            <th>Data/Ora</th>
+            <th>Paziente</th>
+            <th>Tipo</th>
+            <th>Gravità</th>
+            <th>Descrizione</th>
+            <th>Azioni</th>
+        </tr>
+        {% for alert in alert_non_risolti %}
+        <tr>
+            <td>{{ alert.data_ora }}</td>
+            <td>{{ alert.paziente.utente.get_full_name }}</td>
+            <td>{{ alert.get_tipo_display }}</td>
+            <td>{{ alert.get_gravita_display }}</td>
+            <td>{{ alert.descrizione }}</td>
+            <td>
+                <a href="{% url 'dettaglio_paziente' pk=alert.paziente.id %}" class="button">Visualizza Paziente</a>
+                <button class="button" onclick="risolviAlert({{ alert.id }})">Risolvi</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{% url 'lista_alert' %}" class="button">Vedi Tutti gli Alert</a></p>
+    {% else %}
+    <p>Nessun alert non risolto al momento.</p>
+    {% endif %}
+</div>
+
+<div style="margin-bottom: 30px;">
+    <h3>Elenco Pazienti</h3>
+    {% if pazienti %}
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo Diabete</th>
+            <th>Email</th>
+            <th>Telefono</th>
+            <th>Azioni</th>
+        </tr>
+        {% for paziente in pazienti %}
+        <tr>
+            <td>{{ paziente.utente.get_full_name }}</td>
+            <td>{{ paziente.get_tipo_diabete_display }}</td>
+            <td>{{ paziente.utente.email }}</td>
+            <td>{{ paziente.telefono }}</td>
+            <td>
+                <a href="{% url 'dettaglio_paziente' pk=paziente.id %}" class="button">Visualizza</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{% url 'lista_pazienti' %}" class="button">Vedi Tutti i Pazienti</a></p>
+    {% else %}
+    <p>Nessun paziente assegnato.</p>
+    {% endif %}
+</div>
+
+{% block extra_js %}
+<script>
+    function risolviAlert(alertId) {
+        if (confirm('Sei sicuro di voler risolvere questo alert?')) {
+            fetch('/medico/alert/' + alertId + '/risolvi/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Alert risolto con successo!');
+                    location.reload();
+                } else {
+                    alert('Errore durante la risoluzione dell\'alert');
+                }
+            });
+        }
+    }
+    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}
+{% endblock %}

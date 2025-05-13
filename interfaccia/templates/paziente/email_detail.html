@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Dettaglio Messaggio{% endblock %}
+
+{% block content %}
+<h2>Dettaglio Messaggio</h2>
+
+<div style="margin-bottom: 30px;">
+  <div style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 20px; border-radius: 5px;">
+    <p><strong>Data:</strong> {{ email.data_ora }}</p>
+    <p><strong>Oggetto:</strong> {{ email.oggetto }}</p>
+    <p><strong>A:</strong> Dr. {{ email.medico_destinatario.utente.get_full_name }}</p>
+    <p><strong>Stato:</strong>
+      {% if email.letto %}
+      <span style="color: green;">Letto</span>
+      {% else %}
+      <span style="color: orange;">Non letto</span>
+      {% endif %}
+    </p>
+    <hr style="margin: 15px 0;">
+    <div style="margin-top: 20px;">
+      <h4>Messaggio:</h4>
+      <p style="white-space: pre-wrap;">{{ email.contenuto }}</p>
+    </div>
+  </div>
+</div>
+
+<div>
+  <a href="{% url 'lista_email_paziente' %}" class="button">Torna ai Messaggi</a>
+  <a href="{% url 'invia_email' %}" class="button">Nuovo Messaggio</a>
+  <a href="{% url 'dashboard_paziente' %}" class="button" style="background-color: #ccc;">Dashboard</a>
+</div>
+{% endblock %}

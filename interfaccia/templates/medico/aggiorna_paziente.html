@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Aggiorna Dati Paziente{% endblock %}
+{% block content %}
+<h2>Aggiorna Dati Paziente</h2>
+<h3>{{ paziente.utente.get_full_name }}</h3>
+<div class="alert alert-info" style="margin-bottom: 20px;">
+  <p>Stai aggiornando i dati del paziente. I campi contrassegnati con * sono obbligatori.</p>
+</div>
+<form method="post">
+  {% csrf_token %}
+  <div style="margin-bottom: 20px;">
+    <h4>Informazioni Generali</h4>
+    <table style="width: 100%;">
+      <tr>
+        <td style="width: 30%; padding: 10px;"><label for="{{ form.eta.id_for_label }}">Età*:</label></td>
+        <td style="width: 70%; padding: 10px;">
+          {{ form.eta }}
+          {% if form.eta.errors %}
+          <div style="color: red;">{{ form.eta.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.tipo_diabete.id_for_label }}">Tipo Diabete*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.tipo_diabete }}
+          {% if form.tipo_diabete.errors %}
+          <div style="color: red;">{{ form.tipo_diabete.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.telefono.id_for_label }}">Telefono*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.telefono }}
+          {% if form.telefono.errors %}
+          <div style="color: red;">{{ form.telefono.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.data_diagnosi.id_for_label }}">Data Diagnosi*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.data_diagnosi }}
+          {% if form.data_diagnosi.errors %}
+          <div style="color: red;">{{ form.data_diagnosi.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <h4>Informazioni Cliniche</h4>
+    <table style="width: 100%;">
+      <tr>
+        <td style="width: 30%; padding: 10px;"><label for="{{ form.valore_glicemia_target_min.id_for_label }}">Glicemia Target Min*:</label></td>
+        <td style="width: 70%; padding: 10px;">
+          {{ form.valore_glicemia_target_min }}
+          {% if form.valore_glicemia_target_min.errors %}
+          <div style="color: red;">{{ form.valore_glicemia_target_min.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.valore_glicemia_target_max.id_for_label }}">Glicemia Target Max*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.valore_glicemia_target_max }}
+          {% if form.valore_glicemia_target_max.errors %}
+          <div style="color: red;">{{ form.valore_glicemia_target_max.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.valore_glicemia_critico_min.id_for_label }}">Glicemia Critica Min*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.valore_glicemia_critico_min }}
+          {% if form.valore_glicemia_critico_min.errors %}
+          <div style="color: red;">{{ form.valore_glicemia_critico_min.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;"><label for="{{ form.valore_glicemia_critico_max.id_for_label }}">Glicemia Critica Max*:</label></td>
+        <td style="padding: 10px;">
+          {{ form.valore_glicemia_critico_max }}
+          {% if form.valore_glicemia_critico_max.errors %}
+          <div style="color: red;">{{ form.valore_glicemia_critico_max.errors }}</div>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <h4>Note Mediche</h4>
+    <div style="padding: 10px;">
+      {{ form.note }}
+      {% if form.note.errors %}
+      <div style="color: red;">{{ form.note.errors }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+    <a href="{% url 'dettaglio_paziente' pk=paziente.id %}" class="button" style="background-color: #f44336;">Annulla</a>
+    <button type="submit" class="button">Salva Modifiche</button>
+  </div>
+</form>
+{% block extra_js %}
+<script>
+  // Inizializza eventuali elementi del form che necessitano di JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+      // Formatta i campi data se necessario
+      const dataFields = document.querySelectorAll('input[type="date"]');
+      dataFields.forEach(field => {
+          // Puoi aggiungere logica per gestire il formato della data
+      });
+  });
+</script>
+{% endblock %}
+{% endblock %}

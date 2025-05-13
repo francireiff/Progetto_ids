@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}I Miei Messaggi{% endblock %}
+
+{% block content %}
+<h2>I Miei Messaggi</h2>
+
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'invia_email' %}" class="button">Nuovo Messaggio</a>
+</div>
+
+{% if emails %}
+<table>
+    <tr>
+        <th>Data/Ora</th>
+        <th>Oggetto</th>
+        <th>Medico</th>
+        <th>Stato</th>
+        <th>Azioni</th>
+    </tr>
+    {% for email in emails %}
+    <tr>
+        <td>{{ email.data_ora }}</td>
+        <td>{{ email.oggetto }}</td>
+        <td>Dr. {{ email.medico_destinatario.utente.get_full_name }}</td>
+        <td>
+            {% if email.letto %}
+            <span style="color: green;">Letto</span>
+            {% else %}
+            <span style="color: orange;">Non letto</span>
+            {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'dettaglio_email_paziente' pk=email.id %}" class="button">Visualizza</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if page_obj.has_other_pages %}
+<div style="margin-top: 20px; text-align: center;">
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Prima</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Precedente</a>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+        <span style="font-weight: bold; padding: 0 10px;">{{ i }}</span>
+        {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+        <a href="?page={{ i }}">{{ i }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Successiva</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Ultima &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% else %}
+<p>Non hai inviato nessun messaggio al tuo medico.</p>
+{% endif %}
+{% endblock %}
