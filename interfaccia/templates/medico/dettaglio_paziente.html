@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}Dettaglio Paziente{% endblock %}
+
+{% block content %}
+<h2>Dettaglio Paziente</h2>
+
+<div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+  <div style="width: 48%;">
+    <div class="alert alert-info">
+      <h3>{{ paziente.utente.get_full_name }}</h3>
+      <p><strong>Età:</strong> {{ paziente.eta }} anni</p>
+      <p><strong>Tipo Diabete:</strong> {{ paziente.get_tipo_diabete_display }}</p>
+      <p><strong>Email:</strong> {{ paziente.utente.email }}</p>
+      <p><strong>Telefono:</strong> {{ paziente.telefono }}</p>
+      <p><strong>Data Diagnosi:</strong> {{ paziente.data_diagnosi }}</p>
+      <p><strong>Note:</strong> {{ paziente.note|default:"Nessuna nota" }}</p>
+    </div>
+  </div>
+  <div style="width: 48%;">
+    <div class="alert alert-warning">
+      <h4>Azioni rapide</h4>
+      <p><a href="{% url 'aggiorna_paziente' pk=paziente.id %}" class="button">Modifica Dati Paziente</a></p>
+      <p><a href="{% url 'prescrivi_terapia' paziente_id=paziente.id %}" class="button">Prescrivi Nuova Terapia</a></p>
+      <p><a href="#sezione-statistiche" class="button">Visualizza Statistiche</a></p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-bottom: 30px;" id="sezione-statistiche">
+  <h3>Statistiche Glicemia</h3>
+  <div style="display: flex; justify-content: space-between;">
+    <div style="width: 48%; border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+      <h4>Ultimi 7 giorni</h4>
+      {% if stat_glicemia_settimana.count > 0 %}
+      <p><strong>Media:</strong> {{ stat_glicemia_settimana.media|floatformat:1 }} mg/dL</p>
+      <p><strong>Massima:</strong> {{ stat_glicemia_settimana.max }} mg/dL</p>
+      <p><strong>Minima:</strong> {{ stat_glicemia_settimana.min }} mg/dL</p>
+      <p><strong>Numero rilevazioni:</strong> {{ stat_glicemia_settimana.count }}</p>
+      {% else %}
+      <p>Nessuna rilevazione negli ultimi 7 giorni.</p>
+      {% endif %}
+    </div>
+    <div style="width: 48%; border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+      <h4>Ultimi 30 giorni</h4>
+      {% if stat_glicemia_mese.count > 0 %}
+      <p><strong>Media:</strong> {{ stat_glicemia_mese.media|floatformat:1 }} mg/dL</p>
+      <p><strong>Massima:</strong> {{ stat_glicemia_mese.max }} mg/dL</p>
+      <p><strong>Minima:</strong> {{ stat_glicemia_mese.min }} mg/dL</p>
+      <p><strong>Numero rilevazioni:</strong> {{ stat_glicemia_mese.count }}</p>
+      {% else %}
+      <p>Nessuna rilevazione negli ultimi 30 giorni.</p>
+      {% endif %}
+    </div>
+  </div>
+  <div style="margin-top: 20px;">
+    <h4>Grafico Glicemia</h4>
+    <div>
+      <select id="periodoGrafico" onchange="aggiornaGrafico()">
+        <option value="settimana">Ultima settimana</option>
+        <option value="mese">Ultimo mese</option>
+        <option value="anno">Ultimo anno</option>
+      </select>
+      <div id="graficoGlicemia" style="width: 100%; height: 400px; border: 1px solid #ddd; margin-top: 10px;">
+        <!-- Qui verrà caricato il grafico -->
+        <p style="text-align: center; padding-top: 180px;">Caricamento grafico...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-bottom: 30px;">
+  <h3>Alert Non Risolti</h3>
+  {% if alert_non_risolti %}
+  <table>
+    <tr>
+      <th>Data/Ora</th>
+      <th>Tipo</th>
+      <th>Gravità</th>
+      <th>Descrizione</th>
+      <th>Azioni</th>
+    </tr>
+    {% for alert in alert_non_risolti %}
+    <tr>
+      <td>{{ alert.data_ora }}</td>
+      <td>{{ alert.get_tipo_display }}</td>
+      <td>{{ alert.get_gravita_display }}</td>
+      <td>{{ alert.descrizione }}</td>
+      <td>
+        <button class="button" onclick="risolviAlert({{ alert.id }})">Risolvi</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Nessun alert non risolto al momento.</p>
+  {% endif %}
+</div>
+
+<div style="margin-bottom: 30px;">
+  <h3>Terapie Attive</h3>
+  {% if terapie_attive %}
+  <table>
+    <tr>
+      <th>Farmaco</th>
+      <th>Dosaggio</th>
+      <th>Frequenza</th>
+      <th>Data Inizio</th>
+      <th>Data Fine</th>
+      <th>Note</th>
+    </tr>
+    {% for terapia in terapie_attive %}
+    <tr>
+      <td>{{ terapia.farmaco }}</td>
+      <td>{{ terapia.dosaggio }}</td>
+      <td>{{ terapia.frequenza }}</td>
+      <td>{{ terapia.data_inizio }}</td>
+      <td>{{ terapia.data_fine }}</td>
+      <td>{{ terapia.note|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Nessuna terapia attiva al momento.</p>
+  <p><a href="{% url 'prescrivi_terapia' paziente_id=paziente.id %}" class="button">Prescrivi Nuova Terapia</a></p>
+  {% endif %}
+</div>
+
+<div style="margin-bottom: 30px;">
+  <h3>Sintomi Attivi</h3>
+  {% if sintomi_attivi %}
+  <table>
+    <tr>
+      <th>Sintomo</th>
+      <th>Intensità</th>
+      <th>Data Inizio</th>
+      <th>Descrizione</th>
+    </tr>
+    {% for sintomo in sintomi_attivi %}
+    <tr>
+      <td>{{ sintomo.tipo }}</td>
+      <td>{{ sintomo.get_intensita_display }}</td>
+      <td>{{ sintomo.data_inizio }}</td>
+      <td>{{ sintomo.descrizione|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Nessun sintomo attivo al momento.</p>
+  {% endif %}
+</div>
+
+<div style="margin-bottom: 30px;">
+  <h3>Rilevazioni Recenti</h3>
+  {% if rilevazioni_recenti %}
+  <table>
+    <tr>
+      <th>Data/Ora</th>
+      <th>Valore (mg/dL)</th>
+      <th>Momento</th>
+      <th>Pasto</th>
+    </tr>
+    {% for rilev in rilevazioni_recenti %}
+    <tr>
+      <td>{{ rilev.data_ora }}</td>
+      <td
+              {% if rilev.valore > 180 %}style="color: red;"
+        {% elif rilev.valore < 70 %}style="color: orange;"
+        {% else %}style="color: green;"{% endif %}
+        >
+        {{ rilev.valore }}
+      </td>
+      <td>{{ rilev.get_momento_display }}</td>
+      <td>{{ rilev.get_pasto_display }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Nessuna rilevazione recente.</p>
+  {% endif %}
+</div>
+
+<div style="margin-bottom: 30px;">
+  <h3>Assunzioni Farmaci Recenti</h3>
+  {% if assunzioni_recenti %}
+  <table>
+    <tr>
+      <th>Data/Ora</th>
+      <th>Farmaco</th>
+      <th>Dosaggio</th>
+      <th>Note</th>
+    </tr>
+    {% for ass in assunzioni_recenti %}
+    <tr>
+      <td>{{ ass.data_ora }}</td>
+      <td>{{ ass.farmaco }}</td>
+      <td>{{ ass.dosaggio }}</td>
+      <td>{{ ass.note|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Nessuna assunzione recente.</p>
+  {% endif %}
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  let chart;
+
+  function risolviAlert(alertId) {
+      if (confirm('Sei sicuro di voler risolvere questo alert?')) {
+          fetch('/medico/alert/' + alertId + '/risolvi/', {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': getCookie('csrftoken'),
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  alert('Alert risolto con successo!');
+                  location.reload();
+              } else {
+                  alert('Errore durante la risoluzione dell\'alert');
+              }
+          });
+      }
+  }
+
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  function aggiornaGrafico() {
+      const periodo = document.getElementById('periodoGrafico').value;
+      const pazienteId = {{ paziente.id }};
+
+      fetch(`/api/glicemia/${pazienteId}/?periodo=${periodo}`)
+          .then(response => response.json())
+          .then(data => {
+              if (chart) {
+                  chart.destroy();
+              }
+
+              if (data.rilevazioni.length === 0) {
+                  document.getElementById('graficoGlicemia').innerHTML =
+                      '<p style="text-align: center; padding-top: 180px;">Nessun dato disponibile per questo periodo</p>';
+                  return;
+              }
+
+              const canvas = document.createElement('canvas');
+              canvas.id = 'chartGlicemia';
+              document.getElementById('graficoGlicemia').innerHTML = '';
+              document.getElementById('graficoGlicemia').appendChild(canvas);
+
+              const ctx = canvas.getContext('2d');
+
+              const labels = data.rilevazioni.map(item => item.data);
+              const valori = data.rilevazioni.map(item => item.valore);
+
+              chart = new Chart(ctx, {
+                  type: 'line',
+                  data: {
+                      labels: labels,
+                      datasets: [{
+                          label: 'Glicemia (mg/dL)',
+                          data: valori,
+                          borderColor: '#4CAF50',
+                          tension: 0.1
+                      }]
+                  },
+                  options: {
+                      responsive: true,
+                      plugins: {
+                          title: {
+                              display: true,
+                              text: 'Andamento Glicemia'
+                          }
+                      },
+                      scales: {
+                          y: {
+                              beginAtZero: false,
+                              min: Math.max(0, Math.min(...valori) - 20),
+                              title: {
+                                  display: true,
+                                  text: 'mg/dL'
+                              }
+                          }
+                      }
+                  }
+              });
+          });
+  }
+
+  // Inizializza il grafico al caricamento della pagina
+  document.addEventListener('DOMContentLoaded', function() {
+      aggiornaGrafico();
+  });
+</script>
+{% endblock %}
+{% endblock %}
