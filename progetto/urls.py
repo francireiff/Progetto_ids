@@ -21,6 +21,7 @@ from django.contrib.auth import views as auth_views
 from interfaccia.views import RegistrazionePazienteView
 from interfaccia import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),

@@ -1,18 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>Sistema di Monitoraggio Diabete</title>
+    <meta charset="UTF-8">
+    <title>Benvenuto - Sistema di Monitoraggio Diabete</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #F6F9FB;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.2em;
+            color: #2F80ED;
+        }
+
+        p.subtitle {
+            font-size: 1.2em;
+            margin-bottom: 2em;
+            color: #555;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .button-group a button {
+            font-size: 1em;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-access {
+            background-color: #2F80ED;
+            color: white;
+        }
+
+        .btn-new {
+            background-color: #56CC9D;
+            color: white;
+        }
+
+        .btn-access:hover, .btn-new:hover {
+            opacity: 0.9;
+        }
+
+        .illustration {
+            max-width: 300px;
+            margin: 30px 0;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+            color: #999;
+        }
+    </style>
 </head>
 <body>
-<h1>Benvenuto nel Sistema di Monitoraggio del Diabete</h1>
-<p>Un'applicazione per il monitoraggio dei pazienti diabetici.</p>
+    <div class="container">
+        <h1>Benvenuto nella tua area della salute</h1>
+        <p class="subtitle">La tua guida personale per il monitoraggio del diabete</p>
 
-<div>
-    <h2>Accedi o Registrati</h2>
-    <ul>
-        <li><a href="{% url 'login' %}">Accedi</a></li>
-        <li><a href="{% url 'registrazione_paziente' %}">Registrati come Paziente</a></li>
-    </ul>
-</div>
+        <div class="button-group">
+            <a href="{% url 'login' %}"><button class="btn-access">Accedi</button></a>
+            <a href="{% url 'registrazione_paziente' %}"><button class="btn-new">Registrati come paziente</button></a>
+        </div>
+    </div>
+
+    <footer>
+        &copy; Federico Antonio Luca - Reiff Francesco - Targon Lorenzo
+    </footer>
 </body>
 </html>

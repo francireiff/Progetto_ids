@@ -1,18 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
+    <title>Login - SaluteConTe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4fbf9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-login {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-home {
+            background-color: #008CBA;
+            color: white;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-<h1>Accedi al Sistema</h1>
-
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
-
-<p><a href="{% url 'registrazione_paziente' %}">Registrati come nuovo paziente</a></p>
-<p><a href="{% url 'home' %}">Torna alla home</a></p>
+    <div class="card">
+        <h2>Accedi al tuo profilo</h2>
+        {% if form.errors %}
+            <div class="error">Nome utente o password non validi.</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Nome utente" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <div>
+                <button type="submit" class="btn btn-login">Login</button>
+                <a href="{% url 'home' %}"><button type="button" class="btn btn-home">Home</button></a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
