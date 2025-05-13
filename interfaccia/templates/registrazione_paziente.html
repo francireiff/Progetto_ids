@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registrazione Paziente</title>
+</head>
+<body>
+<h1>Registrazione Nuovo Paziente</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Registrati</button>
+</form>
+
+<p><a href="{% url 'login' %}">Già registrato? Accedi</a></p>
+<p><a href="{% url 'home' %}">Torna alla home</a></p>
+</body>
+</html>

@@ -1,17 +1,19 @@
 import pytest
 from django.utils import timezone
-from interfaccia.models import Terapia, Paziente, Diabetologo, Farmaco, Alert, RilevazioneGlicemia
+from interfaccia.models import Alert, RilevazioneGlicemia
 
 @pytest.mark.django_db
-def test_alert_generato_da_valore_glicemico_alto():
-    paziente = Paziente.objects.create(nome='Mario', cognome='Rossi', data_nascita='1990-01-01')
-    farmaco = Farmaco.objects.create(nome='Insulina A', tipo='insulina')
-    medico = Diabetologo.objects.create(nome='Doc', cognome='Medico')
-    paziente.medico_riferimento = medico
-    paziente.save()
-
+def test_alert_generato_da_valore_glicemico_alto(paziente):
+    # Verifica che questo test crei correttamente un alert per valori glicemici anomali
     rilevazione = RilevazioneGlicemia.objects.create(
-        paziente=paziente, valore=300, momento='post', pasto='cena'
+        paziente=paziente,
+        valore=300,  # Valore alto che dovrebbe generare un alert
+        momento='post',
+        pasto='cena'
     )
 
-    assert Alert.objects.filter(paziente=paziente).exists()
+    # Controlla che un alert sia stato creato
+    alert = Alert.objects.filter(paziente=paziente).first()
+    assert alert is not None
+    assert alert.tipo == 'glicemia'
+    assert alert.gravita == 'alta'  # Il valore 300 post-pasto è considerato grave
