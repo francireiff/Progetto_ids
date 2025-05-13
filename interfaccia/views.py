@@ -49,9 +49,21 @@ def dashboard(request):
     """Reindirizza alla dashboard appropriata in base al tipo di utente"""
     user = request.user
     if user.tipo == 'paziente':
-        return redirect('dashboard_paziente')
+        # Assicurati che questo profilo esista
+        try:
+            paziente = user.profilo_paziente
+            return redirect('dashboard_paziente')
+        except Exception as e:
+            # Logging dell'errore
+            print(f"Errore nel recuperare il profilo paziente: {e}")
+            return render(request, 'error.html', {'error': 'Profilo paziente non trovato. Contattare l\'amministratore.'})
     elif user.tipo == 'medico':
-        return redirect('dashboard_medico')
+        try:
+            medico = user.profilo_diabetologo
+            return redirect('dashboard_medico')
+        except Exception as e:
+            print(f"Errore nel recuperare il profilo medico: {e}")
+            return render(request, 'error.html', {'error': 'Profilo medico non trovato. Contattare l\'amministratore.'})
     else:
         return redirect('admin:index')
 
@@ -144,6 +156,46 @@ def dashboard_medico(request):
     }
 
     return render(request, 'medico/dashboard.html', context)
+
+@login_required
+def debug_view(request):
+    """Vista temporanea per il debug"""
+    context = {
+        'username': request.user.username,
+        'user_id': request.user.id,
+        'tipo_utente': request.user.tipo,
+        'is_authenticated': request.user.is_authenticated,
+    }
+
+    # Informazioni aggiuntive in base al tipo di utente
+    if request.user.tipo == 'paziente':
+        try:
+            paziente = request.user.profilo_paziente
+            context.update({
+                'paziente_id': paziente.id,
+                'paziente_exists': True,
+                'medico_riferimento': paziente.medico_riferimento.utente.get_full_name() if paziente.medico_riferimento else 'Non assegnato'
+            })
+        except Exception as e:
+            context.update({
+                'paziente_exists': False,
+                'paziente_error': str(e)
+            })
+
+    # Lista di tutti gli URL disponibili
+    from django.urls import get_resolver
+    url_patterns = get_resolver().url_patterns
+    urls = []
+    for pattern in url_patterns:
+        if hasattr(pattern, 'url_patterns'):
+            for subpattern in pattern.url_patterns:
+                urls.append(subpattern.pattern)
+        else:
+            urls.append(pattern.pattern)
+
+    context['available_urls'] = urls
+
+    return render(request, 'debug.html', context)
 
 # Gestione rilevazioni glicemia
 class RilevazioneGlicemiaCreateView(PazienteMixin, CreateView):

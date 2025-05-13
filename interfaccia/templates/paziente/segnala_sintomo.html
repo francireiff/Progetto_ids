@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Segnala Sintomo{% endblock %}
+
+{% block content %}
+<h2>Segnala un Nuovo Sintomo</h2>
+
+<form method="post">
+  {% csrf_token %}
+
+  {% for field in form %}
+  <div style="margin-bottom: 15px;">
+    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+    {% if field.help_text %}
+    <small style="display:block; color: #666;">{{ field.help_text }}</small>
+    {% endif %}
+    {{ field }}
+    {% if field.errors %}
+    <div style="color: red;">
+      {% for error in field.errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <button type="submit" class="button">Salva Sintomo</button>
+  <a href="{% url 'dashboard_paziente' %}" class="button" style="background-color: #ccc;">Annulla</a>
+</form>
+
+<div style="margin-top: 20px;">
+  <h3>Sintomi comuni del diabete</h3>
+  <ul>
+    <li><strong>Ipoglicemia</strong>: sudorazione, tremore, fame, confusione, capogiri</li>
+    <li><strong>Iperglicemia</strong>: sete intensa, minzione frequente, stanchezza, visione offuscata</li>
+    <li><strong>Altri</strong>: formicolio agli arti, guarigione lenta delle ferite, infezioni frequenti</li>
+  </ul>
+  <p><strong>Nota:</strong> In caso di sintomi gravi, contatta immediatamente il tuo medico o recati al pronto soccorso.</p>
+</div>
+{% endblock %}

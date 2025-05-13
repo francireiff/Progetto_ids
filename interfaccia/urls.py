@@ -52,4 +52,5 @@ urlpatterns = [
 
     # API per dati grafici (usato da entrambi pazienti e medici)
     path('api/glicemia/<int:paziente_id>/', views.grafico_glicemia, name='api_glicemia'),
+    path('debug/', views.debug_view, name='debug'),
 ]
