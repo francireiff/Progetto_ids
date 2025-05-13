@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Rileva Glicemia{% endblock %}
+
+{% block content %}
+<h2>Inserisci Nuova Rilevazione Glicemica</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+    <div style="margin-bottom: 15px;">
+        <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+        {% if field.help_text %}
+        <small style="display:block; color: #666;">{{ field.help_text }}</small>
+        {% endif %}
+        {{ field }}
+        {% if field.errors %}
+        <div style="color: red;">
+            {% for error in field.errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="button">Salva Rilevazione</button>
+    <a href="{% url 'dashboard_paziente' %}" class="button" style="background-color: #ccc;">Annulla</a>
+</form>
+
+<div style="margin-top: 20px;">
+    <h3>Consigli per la rilevazione</h3>
+    <ul>
+        <li>Lavati le mani con acqua calda e sapone prima di fare la rilevazione</li>
+        <li>Assicurati che il tuo strumento di misurazione sia calibrato correttamente</li>
+        <li>Se la rilevazione avviene dopo un pasto, attendi almeno 1-2 ore</li>
+        <li>Registra eventuali sintomi o fattori che potrebbero influenzare la glicemia</li>
+    </ul>
+</div>
+{% endblock %}
