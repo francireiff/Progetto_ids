@@ -1,6 +1,6 @@
 import pytest
-from app.forms import AssunzioneFarmacoForm
-from app.models import Paziente, Terapia, Farmaco
+from interfaccia.forms import AssunzioneFarmacoForm
+from interfaccia.models import Paziente, Terapia, Farmaco
 from django.utils import timezone
 
 @pytest.mark.django_db

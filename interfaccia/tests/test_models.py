@@ -1,6 +1,6 @@
 import pytest
 from django.utils import timezone
-from app.models import Terapia, Paziente, Diabetologo, Farmaco, Alert, RilevazioneGlicemia
+from interfaccia.models import Terapia, Paziente, Diabetologo, Farmaco, Alert, RilevazioneGlicemia
 
 @pytest.mark.django_db
 def test_alert_generato_da_valore_glicemico_alto():

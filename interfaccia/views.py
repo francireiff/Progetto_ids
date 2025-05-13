@@ -1,6 +1,12 @@
+
+from django.shortcuts import render
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from .forms import RegistrazionePazienteForm
+
+def home(request):
+    """Home page view"""
+    return render(request, 'home.html')
 
 class RegistrazionePazienteView(FormView):
     template_name = 'registrazione_paziente.html'
