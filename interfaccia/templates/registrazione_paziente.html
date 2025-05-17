@@ -1,18 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Registrazione Paziente</title>
+    <title>Registrazione Paziente - SaluteConTe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4fbf9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-register {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-home {
+            background-color: #008CBA;
+            color: white;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .links {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .links a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<h1>Registrazione Nuovo Paziente</h1>
+    <div class="card">
+        <h2>Registrazione Nuovo Paziente</h2>
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Registrati</button>
-</form>
+        {% if form.errors %}
+            <div class="error">Per favore correggi gli errori nel modulo.</div>
+        {% endif %}
 
-<p><a href="{% url 'login' %}">Già registrato? Accedi</a></p>
-<p><a href="{% url 'home' %}">Torna alla home</a></p>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div>
+                <button type="submit" class="btn btn-register">Registrati</button>
+                <a href="{% url 'home' %}"><button type="button" class="btn btn-home">Home</button></a>
+            </div>
+        </form>
+
+        <div class="links">
+            <p>
+                <a href="{% url 'login' %}">Già registrato? Accedi</a>
+            </p>
+        </div>
+    </div>
 </body>
 </html>

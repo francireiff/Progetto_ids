@@ -13,6 +13,7 @@
 <table id="tabellaPazienti">
   <tr>
     <th>Nome</th>
+    <th>Cognome</th>
     <th>Età</th>
     <th>Tipo Diabete</th>
     <th>Email</th>
@@ -22,12 +23,13 @@
   </tr>
   {% for paziente in pazienti %}
   <tr>
-    <td>{{ paziente.utente.get_full_name }}</td>
+    <td>{{ paziente.nome }} </td>
+    <td>{{ paziente.cognome }}</td>
     <td>{{ paziente.eta }}</td>
-    <td>{{ paziente.get_tipo_diabete_display }}</td>
+    <td>{{ paziente.get_tipo_diabete_display|default:"—" }}</td>
     <td>{{ paziente.utente.email }}</td>
-    <td>{{ paziente.telefono }}</td>
-    <td>{{ paziente.alert_set.filter.risolto=False|count }}</td>
+    <td>{{ paziente.telefono|default:"—" }}</td>
+    <td>{{ paziente.alert_attivi }}</td>
     <td>
       <a href="{% url 'dettaglio_paziente' pk=paziente.id %}" class="button">Visualizza</a>
       <a href="{% url 'aggiorna_paziente' pk=paziente.id %}" class="button">Modifica</a>

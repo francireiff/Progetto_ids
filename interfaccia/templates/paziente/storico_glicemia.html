@@ -5,11 +5,6 @@
 {% block content %}
 <h2>Storico Rilevazioni Glicemiche</h2>
 
-<div style="margin-bottom: 20px;">
-  <a href="{% url 'rileva_glicemia' %}" class="button">Nuova Rilevazione</a>
-  <a href="{% url 'grafico_glicemia' %}" class="button">Visualizza Grafici</a>
-</div>
-
 {% if rilevazioni %}
 <table>
   <tr>
@@ -64,14 +59,17 @@
 {% else %}
 <p>Nessuna rilevazione glicemica registrata.</p>
 {% endif %}
+<div style="margin-bottom: 20px;">
+  <a href="{% url 'rileva_glicemia' %}" class="button">Nuova Rilevazione</a>
+</div>
 
-<div style="margin-top: 20px;">
+<div style="margin-top: 20px;" class="alert alert-info">
   <h3>Valori di riferimento</h3>
   <ul>
-    <li><strong>Ipoglicemia:</strong> &lt; 70 mg/dL</li>
-    <li><strong>Normale a digiuno:</strong> 70-100 mg/dL</li>
-    <li><strong>Normale dopo pasto:</strong> &lt; 180 mg/dL</li>
-    <li><strong>Iperglicemia:</strong> &gt; 180 mg/dL</li>
+    <strong>Ipoglicemia:</strong> &lt; 70 mg/dL <br>
+    <strong>Normale a digiuno:</strong> 70-100 mg/dL <br>
+    <strong>Normale dopo pasto:</strong> &lt; 180 mg/dL<br>
+    <strong>Iperglicemia:</strong> &gt; 180 mg/dL
   </ul>
 </div>
 {% endblock %}

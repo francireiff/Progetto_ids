@@ -48,12 +48,27 @@ class Diabetologo(models.Model):
         verbose_name_plural = "Diabetologi"
 
 # Modello per il Paziente
+from django.db import models
+from datetime import date
+
+TIPI_DIABETE = (
+    ('T1', 'Tipo 1'),
+    ('T2', 'Tipo 2'),
+    ('G', 'Gestazionale'),
+    ('A', 'Altro'),
+)
+
 class Paziente(models.Model):
     utente = models.OneToOneField(Utente, on_delete=models.CASCADE, related_name='profilo_paziente')
     medico_riferimento = models.ForeignKey(Diabetologo, on_delete=models.SET_NULL, null=True, related_name='pazienti')
+    
     nome = models.CharField(max_length=100)
     cognome = models.CharField(max_length=100)
     data_nascita = models.DateField()
+
+    telefono = models.CharField(max_length=20, blank=True, null=True)  # ✅ Aggiunto
+
+    tipo_diabete = models.CharField(max_length=2, choices=TIPI_DIABETE, blank=True, null=True)  # ✅ Aggiunto
 
     # Fattori di rischio
     fumatore = models.BooleanField(default=False)
@@ -68,6 +83,11 @@ class Paziente(models.Model):
 
     def __str__(self):
         return f"{self.nome} {self.cognome}"
+
+    @property
+    def eta(self):
+        today = date.today()
+        return today.year - self.data_nascita.year - ((today.month, today.day) < (self.data_nascita.month, self.data_nascita.day))
 
     class Meta:
         verbose_name = "Paziente"

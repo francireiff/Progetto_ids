@@ -3,18 +3,31 @@
 {% block title %}Prescrivi Terapia{% endblock %}
 
 {% block content %}
+<div class="card mb-4">
+  <div class="card-header">
 <h2>Prescrivi Terapia</h2>
-<h3>Paziente: {{ paziente.utente.get_full_name }}</h3>
+<i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
+<h3>Paziente: {{ paziente.nome }} {{ paziente.cognome }}</h3>
 
 <div class="alert alert-info" style="margin-bottom: 20px;">
   <p>Stai prescrivendo una nuova terapia per il paziente. I campi contrassegnati con * sono obbligatori.</p>
 </div>
+  </div>
+  </div>
 
+  <div class="card mb-4">
+  
 <form method="post">
   {% csrf_token %}
 
   <div style="margin-bottom: 20px;">
+  <div class="card-header">
     <h4>Informazioni Terapia</h4>
+    <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
     <table style="width: 100%;">
       <tr>
         <td style="width: 30%; padding: 10px;"><label for="{{ form.farmaco.id_for_label }}">Farmaco*:</label></td>
@@ -72,50 +85,61 @@
       </tr>
     </table>
   </div>
+  </div>
+</div>
 
-  <div style="margin-bottom: 20px;">
+  <div class="card mb-4">
+  <div class="card-header">
     <h4>Note e Istruzioni</h4>
-    <div style="padding: 10px;">
+    <i class="chevron fa fa-chevron-down"></i>
+  </div>
+    <div class="card-body">
       {{ form.note }}
       {% if form.note.errors %}
       <div style="color: red;">{{ form.note.errors }}</div>
       {% endif %}
       <p style="font-size: 0.9em; margin-top: 5px;">Inserisci eventuali note o istruzioni specifiche per il paziente riguardo questa terapia.</p>
-    </div>
-  </div>
 
-  <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+  <div style="margin-top: 20px; margin-bottom: 20px; display: flex; justify-content: space-between;">
     <a href="{% url 'dettaglio_paziente' pk=paziente.id %}" class="button" style="background-color: #f44336;">Annulla</a>
     <button type="submit" class="button">Prescrivi Terapia</button>
   </div>
 </form>
+</div>
+</div>
 
-<div style="margin-top: 40px;">
+
+<div class="card mb-4">
+  <div class="card-header">
   <h3>Terapie Attive del Paziente</h3>
-  {% if paziente.terapia_set.filter.attiva=True %}
-  <table>
-    <tr>
-      <th>Farmaco</th>
-      <th>Dosaggio</th>
-      <th>Frequenza</th>
-      <th>Data Inizio</th>
-      <th>Data Fine</th>
-      <th>Note</th>
-    </tr>
-    {% for terapia in paziente.terapia_set.filter.attiva=True %}
-    <tr>
-      <td>{{ terapia.farmaco }}</td>
-      <td>{{ terapia.dosaggio }}</td>
-      <td>{{ terapia.frequenza }}</td>
-      <td>{{ terapia.data_inizio }}</td>
-      <td>{{ terapia.data_fine }}</td>
-      <td>{{ terapia.note|default:"-" }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% else %}
-  <p>Il paziente non ha terapie attive al momento.</p>
-  {% endif %}
+  <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
+  {% if terapie_attive %}
+<table>
+  <tr>
+    <th>Farmaco</th>
+    <th>Dosaggio</th>
+    <th>Frequenza</th>
+    <th>Data Inizio</th>
+    <th>Data Fine</th>
+    <th>Note</th>
+  </tr>
+  {% for terapia in terapie_attive %}
+  <tr>
+    <td>{{ terapia.farmaco }}</td>
+    <td>{{ terapia.dosaggio }}</td>
+    <td>{{ terapia.frequenza }}</td>
+    <td>{{ terapia.data_inizio }}</td>
+    <td>{{ terapia.data_fine }}</td>
+    <td>{{ terapia.note|default:"-" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Il paziente non ha terapie attive al momento.</p>
+{% endif %}
+</div>
 </div>
 
 {% block extra_js %}

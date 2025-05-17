@@ -4,7 +4,8 @@
 
 {% block content %}
 <h2>Dashboard Medico</h2>
-<h3>Benvenuto, Dr. {{ medico.utente.get_full_name }}</h3>
+<h3>Benvenuto, Dr. {{ medico.nome }} {{ medico.cognome }}</h3>
+
 
 <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
     <div style="width: 48%;">
@@ -14,18 +15,15 @@
             <p><strong>Alert non risolti:</strong> {{ alert_non_risolti.count }}</p>
         </div>
     </div>
-    <div style="width: 48%;">
-        <div class="alert alert-warning">
-            <h4>Azioni rapide</h4>
-            <p><a href="{% url 'lista_pazienti' %}" class="button">Gestisci Pazienti</a></p>
-            <p><a href="{% url 'lista_alert' %}" class="button">Gestisci Alert</a></p>
-            <p><a href="{% url 'lista_email_medico' %}" class="button">Messaggi</a></p>
-        </div>
-    </div>
 </div>
 
-<div style="margin-bottom: 30px;">
+<div class="card mb-4">
+  <div class="card-header">
     <h3>Pazienti con Alert Critici (ultima settimana)</h3>
+    <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
+
     {% if pazienti_critici %}
     <table>
         <tr>
@@ -45,9 +43,16 @@
     <p>Nessun paziente con alert critici nell'ultima settimana.</p>
     {% endif %}
 </div>
+</div>
+</div>
 
-<div style="margin-bottom: 30px;">
+<div class="card mb-4">
+  <div class="card-header">
     <h3>Alert Non Risolti</h3>
+    <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
+
     {% if alert_non_risolti %}
     <table>
         <tr>
@@ -77,9 +82,14 @@
     <p>Nessun alert non risolto al momento.</p>
     {% endif %}
 </div>
+</div>
 
-<div style="margin-bottom: 30px;">
+<div class="card mb-4">
+  <div class="card-header">
     <h3>Elenco Pazienti</h3>
+    <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
     {% if pazienti %}
     <table>
         <tr>
@@ -105,6 +115,7 @@
     {% else %}
     <p>Nessun paziente assegnato.</p>
     {% endif %}
+</div>
 </div>
 
 {% block extra_js %}

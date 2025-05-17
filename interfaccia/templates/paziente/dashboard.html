@@ -3,137 +3,180 @@
 {% block title %}Dashboard Paziente{% endblock %}
 
 {% block content %}
-<h2>Dashboard Paziente</h2>
-<h3>Benvenuto, {{ paziente.utente.get_full_name }}</h3>
 
-<div class="alert alert-info">
-  <p><strong>Il tuo medico:</strong> Dr. {{ paziente.medico_riferimento.utente.get_full_name }}</p>
-</div>
+    <h2>Benvenuto, {{ paziente.utente.get_full_name }}</h2>
 
-<div style="margin-bottom: 30px;">
-  <h3>Statistiche Glicemia (ultima settimana)</h3>
-  <table>
-    <tr>
-      <th>Media</th>
-      <th>Massimo</th>
-      <th>Minimo</th>
-      <th>Rilevazioni</th>
-    </tr>
-    <tr>
-      <td>{{ stat_glicemia.media|floatformat:0|default:"N/D" }} mg/dL</td>
-      <td>{{ stat_glicemia.max|default:"N/D" }} mg/dL</td>
-      <td>{{ stat_glicemia.min|default:"N/D" }} mg/dL</td>
-      <td>{{ stat_glicemia.count|default:"0" }}</td>
-    </tr>
-  </table>
-  <p><a href="{% url 'grafico_glicemia' %}" class="button">Visualizza Grafici</a></p>
-</div>
+    <div class="alert alert-info">
+        <p><strong>Il tuo medico:</strong> Dr. {{ paziente.medico_riferimento.utente.get_full_name }}</p>
+        <div class="card-body">
+            <p>Benvenuto nella tua dashboard. Qui puoi monitorare i tuoi livelli di glicemia, le tue terapie e assunzioni, e molto altro.</p>
+        </div>
+    </div>
 
-<div style="margin-bottom: 30px;">
-  <h3>Ultime Rilevazioni Glicemiche</h3>
-  {% if rilevazioni %}
-  <table>
-    <tr>
-      <th>Data/Ora</th>
-      <th>Valore (mg/dL)</th>
-      <th>Momento</th>
-      <th>Pasto</th>
-    </tr>
-    {% for rilev in rilevazioni %}
-    <tr>
-      <td>{{ rilev.data_ora }}</td>
-      <td>{{ rilev.valore }}</td>
-      <td>{{ rilev.get_momento_display }}</td>
-      <td>{{ rilev.get_pasto_display }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  <p><a href="{% url 'storico_glicemia' %}" class="button">Vedi Storico Completo</a></p>
-  {% else %}
-  <p>Nessuna rilevazione registrata.</p>
-  {% endif %}
-  <p><a href="{% url 'rileva_glicemia' %}" class="button">Inserisci Nuova Rilevazione</a></p>
-</div>
+    <!-- Card Statistiche Glicemia -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Statistiche Glicemia (ultima settimana)</h3>
+            <i class="chevron fa fa-chevron-down"></i>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th>Media</th>
+                    <th>Massimo</th>
+                    <th>Minimo</th>
+                    <th>Rilevazioni</th>
+                </tr>
+                <tr>
+                    <td>{{ stat_glicemia.media|floatformat:0|default:"N/D" }} mg/dL</td>
+                    <td>{{ stat_glicemia.max|default:"N/D" }} mg/dL</td>
+                    <td>{{ stat_glicemia.min|default:"N/D" }} mg/dL</td>
+                    <td>{{ stat_glicemia.count|default:"0" }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-<div style="margin-bottom: 30px;">
-  <h3>Terapie Attive</h3>
-  {% if terapie_attive %}
-  <table>
-    <tr>
-      <th>Farmaco</th>
-      <th>Dosaggio</th>
-      <th>Frequenza</th>
-      <th>Inizio</th>
-      <th>Fine</th>
-    </tr>
-    {% for terapia in terapie_attive %}
-    <tr>
-      <td>{{ terapia.farmaco.nome }}</td>
-      <td>{{ terapia.dosaggio }}</td>
-      <td>{{ terapia.frequenza }}</td>
-      <td>{{ terapia.data_inizio }}</td>
-      <td>{{ terapia.data_fine }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% else %}
-  <p>Nessuna terapia attiva al momento.</p>
-  {% endif %}
-  <p><a href="{% url 'assunzione_farmaco' %}" class="button">Registra Assunzione Farmaco</a></p>
-</div>
+    <!-- Card Ultime Rilevazioni Glicemiche -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Ultime Rilevazioni Glicemiche</h3>
+            <i class="chevron fa fa-chevron-down"></i>
+        </div>
+        <div class="card-body">
+            {% if rilevazioni %}
+            <table class="table">
+                <tr>
+                    <th>Data/Ora</th>
+                    <th>Valore (mg/dL)</th>
+                    <th>Momento</th>
+                    <th>Pasto</th>
+                </tr>
+                {% for rilev in rilevazioni %}
+                <tr>
+                    <td>{{ rilev.data_ora }}</td>
+                    <td>{{ rilev.valore }}</td>
+                    <td>{{ rilev.get_momento_display }}</td>
+                    <td>{{ rilev.get_pasto_display }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="button-container">
+                <p><a href="{% url 'storico_glicemia' %}" class="button">Vedi Storico Completo</a></p>
+            {% else %}
+                <p>Nessuna rilevazione registrata.</p>
+            {% endif %}
+            <p><a href="{% url 'rileva_glicemia' %}" class="button">Inserisci Nuova Rilevazione</a></p>
+            </div>
+        </div>
+    </div>
 
-<div style="margin-bottom: 30px;">
-  <h3>Ultime Assunzioni Farmaci</h3>
-  {% if assunzioni %}
-  <table>
-    <tr>
-      <th>Data/Ora</th>
-      <th>Farmaco</th>
-      <th>Dosaggio</th>
-      <th>Note</th>
-    </tr>
-    {% for ass in assunzioni %}
-    <tr>
-      <td>{{ ass.data_ora }}</td>
-      <td>{{ ass.farmaco.nome }}</td>
-      <td>{{ ass.dosaggio }}</td>
-      <td>{{ ass.note }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  <p><a href="{% url 'storico_assunzioni' %}" class="button">Vedi Storico Completo</a></p>
-  {% else %}
-  <p>Nessuna assunzione registrata.</p>
-  {% endif %}
-</div>
+    <!-- Card Terapie Attive -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Terapie Attive</h3>
+            <i class="chevron fa fa-chevron-down"></i>
+        </div>
+        <div class="card-body">
+            {% if terapie_attive %}
+            <table class="table">
+                <tr>
+                    <th>Farmaco</th>
+                    <th>Dosaggio</th>
+                    <th>Frequenza</th>
+                    <th>Inizio</th>
+                    <th>Fine</th>
+                </tr>
+                {% for terapia in terapie_attive %}
+                <tr>
+                    <td>{{ terapia.farmaco.nome }}</td>
+                    <td>{{ terapia.dosaggio }}</td>
+                    <td>{{ terapia.frequenza }}</td>
+                    <td>{{ terapia.data_inizio }}</td>
+                    <td>{{ terapia.data_fine }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p>Nessuna terapia attiva al momento.</p>
+            {% endif %}
+            <p><a href="{% url 'assunzione_farmaco' %}" class="button">Registra Assunzione Farmaco</a></p>
+        </div>
+    </div>
 
-<div style="margin-bottom: 30px;">
-  <h3>Alert Attivi</h3>
-  {% if alert_non_risolti %}
-  <table>
-    <tr>
-      <th>Data/Ora</th>
-      <th>Tipo</th>
-      <th>Gravità</th>
-      <th>Descrizione</th>
-    </tr>
-    {% for alert in alert_non_risolti %}
-    <tr>
-      <td>{{ alert.data_ora }}</td>
-      <td>{{ alert.get_tipo_display }}</td>
-      <td>{{ alert.get_gravita_display }}</td>
-      <td>{{ alert.descrizione }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% else %}
-  <p>Nessun alert attivo al momento.</p>
-  {% endif %}
-</div>
+    <!-- Card Ultime Assunzioni Farmaci -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Ultime Assunzioni Farmaci</h3>
+            <i class="chevron fa fa-chevron-down"></i>
+        </div>
+        <div class="card-body">
+            {% if assunzioni %}
+            <table class="table">
+                <tr>
+                    <th>Data/Ora</th>
+                    <th>Farmaco</th>
+                    <th>Dosaggio</th>
+                    <th>Note</th>
+                </tr>
+                {% for ass in assunzioni %}
+                <tr>
+                    <td>{{ ass.data_ora }}</td>
+                    <td>{{ ass.farmaco.nome }}</td>
+                    <td>{{ ass.dosaggio }}</td>
+                    <td>{{ ass.note }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <p><a href="{% url 'storico_assunzioni' %}" class="button">Vedi Storico Completo</a></p>
+            {% else %}
+            <p>Nessuna assunzione registrata.</p>
+            {% endif %}
+        </div>
+    </div>
 
-<div>
-  <h3>Altre Azioni</h3>
-  <p><a href="{% url 'segnala_sintomo' %}" class="button">Segnala Sintomo</a></p>
-  <p><a href="{% url 'invia_email' %}" class="button">Contatta il Medico</a></p>
-</div>
+    <!-- Card Alert Attivi -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Alert Attivi</h3>
+            <i class="chevron fa fa-chevron-down"></i>
+        </div>
+        <div class="card-body">
+            {% if alert_non_risolti %}
+            <table class="table">
+                <tr>
+                    <th>Data/Ora</th>
+                    <th>Tipo</th>
+                    <th>Gravità</th>
+                    <th>Descrizione</th>
+                </tr>
+                {% for alert in alert_non_risolti %}
+                <tr>
+                    <td>{{ alert.data_ora }}</td>
+                    <td>{{ alert.get_tipo_display }}</td>
+                    <td>{{ alert.get_gravita_display }}</td>
+                    <td>{{ alert.descrizione }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p>Nessun alert attivo al momento.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Card Altre Azioni -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Altre Azioni</h3>
+            <i class="chevron fa fa-chevron-down"></i>
+        </div>
+        <div class="card-body">
+          <div class="button-container">
+            <p><a href="{% url 'segnala_sintomo' %}" class="button">Segnala Sintomo</a></p>
+            <p><a href="{% url 'invia_email' %}" class="button">Contatta il Medico</a></p>
+          </div>
+        </div>
+    </div>
+
 {% endblock %}

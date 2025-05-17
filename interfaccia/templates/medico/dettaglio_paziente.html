@@ -3,59 +3,76 @@
 {% block title %}Dettaglio Paziente{% endblock %}
 
 {% block content %}
-<h2>Dettaglio Paziente</h2>
-
-<div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-  <div style="width: 48%;">
-    <div class="alert alert-info">
-      <h3>{{ paziente.utente.get_full_name }}</h3>
-      <p><strong>Età:</strong> {{ paziente.eta }} anni</p>
-      <p><strong>Tipo Diabete:</strong> {{ paziente.get_tipo_diabete_display }}</p>
-      <p><strong>Email:</strong> {{ paziente.utente.email }}</p>
-      <p><strong>Telefono:</strong> {{ paziente.telefono }}</p>
-      <p><strong>Data Diagnosi:</strong> {{ paziente.data_diagnosi }}</p>
-      <p><strong>Note:</strong> {{ paziente.note|default:"Nessuna nota" }}</p>
-    </div>
+<div class="card mb-4">
+  <div class="card-header">
+    <h2>Dettaglio Paziente</h2>
+    <i class="chevron fa fa-chevron-down"></i>
   </div>
-  <div style="width: 48%;">
-    <div class="alert alert-warning">
-      <h4>Azioni rapide</h4>
-      <p><a href="{% url 'aggiorna_paziente' pk=paziente.id %}" class="button">Modifica Dati Paziente</a></p>
-      <p><a href="{% url 'prescrivi_terapia' paziente_id=paziente.id %}" class="button">Prescrivi Nuova Terapia</a></p>
-      <p><a href="#sezione-statistiche" class="button">Visualizza Statistiche</a></p>
+
+  <div class="card-body">
+    <div class="dettaglio-wrapper" style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <div style="flex: 1 1 48%;">
+        <div class="alert alert-info">
+          <h3>{{ paziente.nome }} {{ paziente.cognome }}</h3>
+          <p><strong>Età:</strong> {{ paziente.eta }} anni</p>
+          <p><strong>Tipo Diabete:</strong> {{ paziente.get_tipo_diabete_display }}</p>
+          <p><strong>Email:</strong> {{ paziente.utente.email }}</p>
+          <p><strong>Telefono:</strong> {{ paziente.telefono }}</p>
+          <p><strong>Data Diagnosi:</strong> {{ paziente.data_diagnosi }}</p>
+          <p><strong>Note:</strong> {{ paziente.note|default:"Nessuna nota" }}</p>
+        </div>
+      </div>
+      <div style="flex: 1 1 48%;">
+        <div class="alert alert-warning">
+          <h4>Azioni rapide</h4>
+          <p><a href="{% url 'aggiorna_paziente' pk=paziente.id %}" class="button">Modifica Dati Paziente</a></p>
+          <p><a href="{% url 'prescrivi_terapia' paziente_id=paziente.id %}" class="button">Prescrivi Nuova Terapia</a></p>
+          <p><a href="#sezione-statistiche" class="button">Visualizza Statistiche</a></p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<div style="margin-bottom: 30px;" id="sezione-statistiche">
-  <h3>Statistiche Glicemia</h3>
-  <div style="display: flex; justify-content: space-between;">
-    <div style="width: 48%; border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-      <h4>Ultimi 7 giorni</h4>
-      {% if stat_glicemia_settimana.count > 0 %}
-      <p><strong>Media:</strong> {{ stat_glicemia_settimana.media|floatformat:1 }} mg/dL</p>
-      <p><strong>Massima:</strong> {{ stat_glicemia_settimana.max }} mg/dL</p>
-      <p><strong>Minima:</strong> {{ stat_glicemia_settimana.min }} mg/dL</p>
-      <p><strong>Numero rilevazioni:</strong> {{ stat_glicemia_settimana.count }}</p>
-      {% else %}
-      <p>Nessuna rilevazione negli ultimi 7 giorni.</p>
-      {% endif %}
-    </div>
-    <div style="width: 48%; border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-      <h4>Ultimi 30 giorni</h4>
-      {% if stat_glicemia_mese.count > 0 %}
-      <p><strong>Media:</strong> {{ stat_glicemia_mese.media|floatformat:1 }} mg/dL</p>
-      <p><strong>Massima:</strong> {{ stat_glicemia_mese.max }} mg/dL</p>
-      <p><strong>Minima:</strong> {{ stat_glicemia_mese.min }} mg/dL</p>
-      <p><strong>Numero rilevazioni:</strong> {{ stat_glicemia_mese.count }}</p>
-      {% else %}
-      <p>Nessuna rilevazione negli ultimi 30 giorni.</p>
-      {% endif %}
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h3>Statistiche Glicemia</h3>
+    <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
+    <div class="statistiche-wrapper" style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <div style="flex: 1 1 40%; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-top: 10px;">
+        <h4>Ultimi 7 giorni</h4>
+        {% if stat_glicemia_settimana.count > 0 %}
+        <p><strong>Media:</strong> {{ stat_glicemia_settimana.media|floatformat:1 }} mg/dL</p>
+        <p><strong>Massima:</strong> {{ stat_glicemia_settimana.max }} mg/dL</p>
+        <p><strong>Minima:</strong> {{ stat_glicemia_settimana.min }} mg/dL</p>
+        <p><strong>Numero rilevazioni:</strong> {{ stat_glicemia_settimana.count }}</p>
+        {% else %}
+        <p>Nessuna rilevazione negli ultimi 7 giorni.</p>
+        {% endif %}
+      </div>
+      <div style="flex: 1 1 40%; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-top: 10px;">
+        <h4>Ultimi 30 giorni</h4>
+        {% if stat_glicemia_mese.count > 0 %}
+        <p><strong>Media:</strong> {{ stat_glicemia_mese.media|floatformat:1 }} mg/dL</p>
+        <p><strong>Massima:</strong> {{ stat_glicemia_mese.max }} mg/dL</p>
+        <p><strong>Minima:</strong> {{ stat_glicemia_mese.min }} mg/dL</p>
+        <p><strong>Numero rilevazioni:</strong> {{ stat_glicemia_mese.count }}</p>
+        {% else %}
+        <p>Nessuna rilevazione negli ultimi 30 giorni.</p>
+        {% endif %}
+      </div>
     </div>
   </div>
-  <div style="margin-top: 20px;">
-    <h4>Grafico Glicemia</h4>
-    <div>
+</div>
+
+  <div class="card mb-4" id="sezione-statistiche">
+    <div class="card-header">
+      <h4>Grafico Glicemia</h4>
+      <i class="chevron fa fa-chevron-down"></i>
+    <div class="card-body">
       <select id="periodoGrafico" onchange="aggiornaGrafico()">
         <option value="settimana">Ultima settimana</option>
         <option value="mese">Ultimo mese</option>
@@ -68,9 +85,14 @@
     </div>
   </div>
 </div>
+</div>
 
-<div style="margin-bottom: 30px;">
+<div class="card mb-4">
+  <div class="card-header">
   <h3>Alert Non Risolti</h3>
+  <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
   {% if alert_non_risolti %}
   <table>
     <tr>
@@ -96,9 +118,15 @@
   <p>Nessun alert non risolto al momento.</p>
   {% endif %}
 </div>
+</div>
+</div>
 
-<div style="margin-bottom: 30px;">
+<div class="card mb-4">
+  <div class="card-header">
   <h3>Terapie Attive</h3>
+  <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
   {% if terapie_attive %}
   <table>
     <tr>
@@ -125,9 +153,15 @@
   <p><a href="{% url 'prescrivi_terapia' paziente_id=paziente.id %}" class="button">Prescrivi Nuova Terapia</a></p>
   {% endif %}
 </div>
+</div>
+</div>
 
-<div style="margin-bottom: 30px;">
+<div class="card mb-4">
+  <div class="card-header">
   <h3>Sintomi Attivi</h3>
+  <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
   {% if sintomi_attivi %}
   <table>
     <tr>
@@ -149,9 +183,15 @@
   <p>Nessun sintomo attivo al momento.</p>
   {% endif %}
 </div>
+</div>
 
-<div style="margin-bottom: 30px;">
+
+<div class="card mb-4">
+  <div class="card-header">
   <h3>Rilevazioni Recenti</h3>
+  <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
   {% if rilevazioni_recenti %}
   <table>
     <tr>
@@ -179,9 +219,15 @@
   <p>Nessuna rilevazione recente.</p>
   {% endif %}
 </div>
+</div>
 
-<div style="margin-bottom: 30px;">
+
+<div class="card mb-4">
+  <div class="card-header">
   <h3>Assunzioni Farmaci Recenti</h3>
+  <i class="chevron fa fa-chevron-down"></i>
+  </div>
+  <div class="card-body">
   {% if assunzioni_recenti %}
   <table>
     <tr>
@@ -202,6 +248,7 @@
   {% else %}
   <p>Nessuna assunzione recente.</p>
   {% endif %}
+</div>
 </div>
 
 {% block extra_js %}

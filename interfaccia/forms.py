@@ -25,10 +25,27 @@ class RilevazioneGlicemiaForm(forms.ModelForm):
     class Meta:
         model = RilevazioneGlicemia
         fields = ['valore', 'momento', 'pasto']
+        
         widgets = {
-            'valore': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
-            'momento': forms.Select(attrs={'class': 'form-control'}),
-            'pasto': forms.Select(attrs={'class': 'form-control'}),
+            'valore': forms.NumberInput(attrs={
+                'type': 'text',
+                'placeholder': 'Valore glicemia',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+            }),
+            'momento': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'placeholder': 'Data e ora della misurazione',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+            }),
+            'pasto': forms.Select(attrs={
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+            }),
+        }
+
+        labels = {
+            'valore': 'Valore glicemico (mg/dL)',
+            'momento': 'Data e ora della misurazione',
+            'pasto': 'Relazione con il pasto',
         }
 
     def clean_valore(self):
@@ -41,14 +58,25 @@ class RilevazioneGlicemiaForm(forms.ModelForm):
 class AssunzioneFarmacoForm(forms.ModelForm):
     terapia = forms.ModelChoiceField(
         queryset=Terapia.objects.none(),
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={
+            'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+        })
     )
 
     class Meta:
         model = AssunzioneFarmaco
         fields = ['terapia', 'quantita']
         widgets = {
-            'quantita': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'quantita': forms.NumberInput(attrs={
+                'type': 'text',  # per renderlo coerente con login.html
+                'placeholder': 'Quantità del farmaco',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+            }),
+        }
+
+        labels = {
+            'terapia': 'Seleziona Terapia',
+            'quantita': 'Quantità',
         }
 
     def __init__(self, *args, **kwargs):
@@ -79,16 +107,35 @@ class AssunzioneFarmacoForm(forms.ModelForm):
 
         return cleaned_data
 
-# Form per la segnalazione di un sintomo
 class SintomoForm(forms.ModelForm):
     class Meta:
         model = Sintomo
         fields = ['descrizione', 'data_inizio', 'data_fine']
         widgets = {
-            'descrizione': forms.TextInput(attrs={'class': 'form-control'}),
-            'data_inizio': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
-            'data_fine': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local', 'required': False}),
+            'descrizione': forms.TextInput(attrs={
+                'class': 'form-control',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+                'placeholder': 'Descrivi il sintomo',
+            }),
+            'data_inizio': forms.DateTimeInput(attrs={
+                'class': 'form-control',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+                'type': 'datetime-local',
+            }),
+            'data_fine': forms.DateTimeInput(attrs={
+                'class': 'form-control',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+                'type': 'datetime-local',
+                'required': False,
+            }),
         }
+
+        labels = {
+            'descrizione': 'Descrizione del sintomo',
+            'data_inizio': 'Data di inizio',
+            'data_fine': 'Data di fine (opzionale)',
+        }
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -129,14 +176,27 @@ class TerapiaForm(forms.ModelForm):
 
         return cleaned_data
 
-# Form per l'invio di un messaggio dal paziente al medico
 class EmailForm(forms.ModelForm):
     class Meta:
         model = Email
         fields = ['oggetto', 'testo']
         widgets = {
-            'oggetto': forms.TextInput(attrs={'class': 'form-control'}),
-            'testo': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'oggetto': forms.TextInput(attrs={
+                'class': 'form-control',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+                'placeholder': 'Oggetto del messaggio',
+            }),
+            'testo': forms.Textarea(attrs={
+                'class': 'form-control',
+                'style': 'width:90%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px;',
+                'rows': 5,
+                'placeholder': 'Scrivi il tuo messaggio',
+            }),
+        }
+
+        labels = {
+            'oggetto': 'Oggetto',
+            'testo': 'Messaggio',
         }
 
 # Form per l'aggiornamento delle informazioni del paziente

@@ -3,39 +3,51 @@
 {% block title %}Rileva Glicemia{% endblock %}
 
 {% block content %}
-<h2>Inserisci Nuova Rilevazione Glicemica</h2>
+<div class="grid grid-cols-1 gap-4">
+  <div class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-semibold mb-4">Inserisci Nuova Rilevazione Glicemica</h2>
 
-<form method="post">
-    {% csrf_token %}
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
 
-    {% for field in form %}
-    <div style="margin-bottom: 15px;">
-        <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-        {% if field.help_text %}
-        <small style="display:block; color: #666;">{{ field.help_text }}</small>
-        {% endif %}
-        {{ field }}
-        {% if field.errors %}
-        <div style="color: red;">
-            {% for error in field.errors %}
-            <p>{{ error }}</p>
-            {% endfor %}
+      {% for field in form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+            {{ field.label }}
+          </label>
+
+          {% if field.help_text %}
+            <p class="text-xs text-gray-500 mb-1">{{ field.help_text }}</p>
+          {% endif %}
+
+          {{ field }}
+
+          {% if field.errors %}
+            <div class="text-sm text-red-600 mt-1">
+              {% for error in field.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
-        {% endif %}
-    </div>
-    {% endfor %}
+      {% endfor %}
 
-    <button type="submit" class="button">Salva Rilevazione</button>
-    <a href="{% url 'dashboard_paziente' %}" class="button" style="background-color: #ccc;">Annulla</a>
-</form>
+      <div class="flex items-center space-x-4 pt-4">
+        <button type="submit" class="button">
+          Salva Rilevazione
+        </button>
+      </div>
+    </form>
+  </div>
 
-<div style="margin-top: 20px;">
-    <h3>Consigli per la rilevazione</h3>
-    <ul>
-        <li>Lavati le mani con acqua calda e sapone prima di fare la rilevazione</li>
-        <li>Assicurati che il tuo strumento di misurazione sia calibrato correttamente</li>
-        <li>Se la rilevazione avviene dopo un pasto, attendi almeno 1-2 ore</li>
-        <li>Registra eventuali sintomi o fattori che potrebbero influenzare la glicemia</li>
+  <div class="alert alert-info">
+    <h3 class="text-lg font-semibold mb-2">Consigli per la rilevazione</h3>
+    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+      Lavati le mani con acqua calda e sapone prima di fare la rilevazione <br>
+      Assicurati che il tuo strumento di misurazione sia calibrato correttamente <br>
+      Se la rilevazione avviene dopo un pasto, attendi almeno 1-2 ore <br>
+      Registra eventuali sintomi o fattori che potrebbero influenzare la glicemia
     </ul>
+  </div>
 </div>
 {% endblock %}
